@@ -5,9 +5,10 @@ use HeadlessChromium\BrowserFactory;
 use League\Csv\Writer;
 
 function data($link,$leilao, $data, $valor) {
-
+    // Declarar um array de leilões
     static $leiloes = [];
 
+    // Adicionar o leilão ao array
     $leiloes[] = [
         "link" =>$link,
         "leilao" => $leilao,
@@ -15,11 +16,13 @@ function data($link,$leilao, $data, $valor) {
         "valor" => $valor,
     ];
 
+    // Retornar o array de leilões
     return $leiloes;
 }
 
 $browserFactory = new BrowserFactory();
 
+// Inicia o Chrome sem interface gráfica
 $browser = $browserFactory->createBrowser();
 
 try {
@@ -30,10 +33,11 @@ try {
     ];
 
     foreach ($links as $link) {
-
+        // Cria uma nova página e navega para uma URL
         $page = $browser->createPage();
         $page->navigate($link)->waitForNavigation();
 
+        // Executa o script JavaScript na página
         $evaluation = $page->evaluate("
             const linhas = document.querySelectorAll('table tr');
             const textosArray = []; // Array para armazenar os textos
@@ -50,8 +54,11 @@ try {
             textosArray; // Retorna o array com os textos das células desejadas
         ");
 
+        // Obtém o resultado da execução do script (o array de textos)
         $textosArray = $evaluation->getReturnValue();
+        var_dump($link);
         $string = $textosArray[3];
+        // Separar a string em um array de leilões
         $leiloes = explode(" ", $string);
         
         $string7 = explode("2º", $leiloes[7]);
@@ -67,8 +74,10 @@ try {
 
         $csvWriter = Writer::createFromPath($csvFilePath, 'w+');
     
+        // Adiciona os cabeçalhos ao arquivo CSV
         $csvWriter->insertOne(['Link','Leilão', 'Datas', 'Preço']);
         
+        // Adiciona os dados da tabela ao arquivo CSV
         foreach ($leiloes as $leilao) {
             $csvWriter->insertOne([$link ,$leilao['leilao'], $leilao['data'], $leilao['valor']]);
         }
@@ -77,7 +86,7 @@ try {
 
 
 } finally {
-    
+    // Fecha o navegador
     $browser->close();
 }
 ?>
