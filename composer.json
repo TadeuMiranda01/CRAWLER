@@ -1,0 +1,20 @@
+{
+    "name": "tadeu/crawler",
+    "autoload": {
+        "psr-4": {
+            "Tadeu\\Crawler\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "TadeuMiranda01",
+            "email": "tadeumiranda0003@gmail.com"
+        }
+    ],
+    "require": {
+        "chrome-php/chrome": "^1.10",
+        "fabpot/goutte": "^4.0",
+        "guzzlehttp/guzzle": "^7.8",
+        "league/csv": "^9.14"
+    }
+}
